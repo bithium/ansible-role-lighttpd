@@ -1,0 +1,5 @@
+---
+# defaults file for lighttpd
+
+lighttpd_packages:
+  - lighttpd

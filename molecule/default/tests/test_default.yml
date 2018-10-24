@@ -1,0 +1,7 @@
+# Molecule managed
+---
+package:
+{{range .Vars.lighttpd.packages}}
+  {{.}}:
+    installed: true
+{{end}}
