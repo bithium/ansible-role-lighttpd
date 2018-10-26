@@ -1,0 +1,18 @@
+##
+## This file is maintained by Ansible - CHANGES WILL BE OVERWRITTEN
+##
+
+{% if lighttpd_config is defined %}
+server.modules += (
+{% for module in lighttpd_modules %}
+       "mod_{{module}}",
+{% endfor %}
+)
+{% endif %}
+
+{% if lighttpd_config is defined %}
+{% for opt in lighttpd_config %}
+{{ opt }} = {{ lighttpd_config[opt] }}
+
+{% endfor %}
+{% endif %}

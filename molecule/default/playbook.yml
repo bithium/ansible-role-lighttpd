@@ -1,6 +1,12 @@
 ---
 - name: Converge
   hosts: all
+  vars:
+    lighttpd_modules:
+      - status
+      - userdir
+    lighttpd_config:
+      server.port: "{{ 8080 + play_hosts.index(inventory_hostname) }}"
   vars_files:
     - goss.yml
   roles:

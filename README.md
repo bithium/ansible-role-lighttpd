@@ -6,35 +6,83 @@ This role installs and configures [lighttpd](http://www.lighttpd.net/).
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should
-be mentioned here. For instance, if the role uses the EC2 module, it may be a
-good idea to mention in this section that the boto package is required.
+No special requirements; note that this role requires root access, so either run it in a playbook with a global `become: yes`, or invoke the role in your playbook like:
+
+    - hosts: database
+      roles:
+        - role: bithium.postgresql
+          become: yes
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including
-any variables that are in defaults/main.yml, vars/main.yml, and any variables
-that can/should be set via parameters to the role. Any variables that are read
-from other roles and/or the global scope (ie. hostvars, group vars, etc.) should
-be mentioned here as well.
+Available variables are listed below, along with default values (see `defaults/main.yml` and `vars/main.yml`):
+
+ * Packages to install for each OS: `lighttpd_package`
+
+```yaml
+---
+lighttpd_package: "lighttpd"
+
+lighttpd_packages:
+  - "{{lighttpd_package}}"
+```
+
+ * Service name for lighttpd: `lighttpd_service: lighttpd`
+
+ * Configuration folder: `lighttpd_config_dir: "/etc/lighttpd"`
+
+ * Configuration folder for available module:
+
+        lighttpd_config_available_dir: "{{lighttpd_config_dir}}/conf-available"
+
+ * Configuration folder for enabled modules:
+
+        lighttpd_config_enabled_dir: "{{lighttpd_config_dir}}/conf-enabled"
+
+ * Global configuration file:
+
+        lighttpd_config_file: "{{lighttpd_config_dir}}/lighttpd.conf"
+
+ * Configuration file created by this role:
+
+        lighttpd_extra_config_file: "{{lighttpd_config_enabled_dir}}/99_ansible.conf"
+
+ * Configuration modules to add to configuration:
+
+        lighttpd_modules:
+           - status
+           - userdir
+
+ * Custom configuration options:
+
+   This is an hash with the options that will be placed in `lighttpd_extra_config_file` as `key = value`, e.g:
+
+        lighttpd_config:
+           server.port: 4242
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in
-regards to parameters that may need to be set for other roles, or variables that
-are used from other roles.
+No dependencies.
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables
-passed in as parameters) is always nice for users too:
+This example playbook enables the `fastcgi` module and starts the server on port 3000.
 
-    - hosts: servers
-      roles:
-         - { role: lighttpd, x: 42 }
+```yaml
+---
+- hosts: webserver
+  become: yes
+  vars:
+    lighttpd_modules:
+       - fastcgi   # Enable FastCGI
+    lighttpd_config:
+       server.port: 3000
+  roles:
+    - lighttpd
+```
 
 License
 -------

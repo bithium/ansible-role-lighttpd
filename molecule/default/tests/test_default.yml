@@ -5,3 +5,41 @@ package:
   {{.}}:
     installed: true
 {{end}}
+
+service:
+  {{.Vars.lighttpd.service}}:
+    enabled: true
+    running: true
+
+port:
+  tcp:{{.Vars.lighttpd.port}}:
+    # required attributes
+    listening: true
+
+file:
+  {{.Vars.lighttpd.config}}:
+    exists: true
+    owner: root
+    group: root
+    filetype: file
+    contains:
+      - '!/server\\.port/'
+
+  {{.Vars.lighttpd.extra_config}}:
+    exists: true
+    owner: root
+    group: root
+    filetype: file
+    contains:
+      - 'server.modules +='
+      - 'mod_status'
+      - "server.port = {{.Vars.lighttpd.port}}"
+
+http:
+  http://localhost:{{.Vars.lighttpd.port}}:
+    # required attributes
+    status: 200
+    # optional attributes
+    timeout: 1000
+    body:
+      - "Lighttpd server package"

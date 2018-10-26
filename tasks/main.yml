@@ -5,3 +5,22 @@
   package:
     name: "{{lighttpd_packages}}"
     state: present
+
+- name: Prepare configuration for options override
+  lineinfile:
+    path: "{{lighttpd_config_file}}"
+    state: absent
+    regexp: "^{{item}}"
+  with_items: "{{lighttpd_config}}"
+
+- name: Create configuration file
+  template:
+    src: lighttpd.conf.j2
+    dest: "{{lighttpd_extra_config_file}}"
+  notify: restart lighttpd
+
+- name: Enable and start lighttpd service
+  service:
+    name: "{{lighttpd_service}}"
+    enabled: true
+    state: started

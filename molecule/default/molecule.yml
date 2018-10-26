@@ -6,8 +6,24 @@ driver:
 lint:
   name: yamllint
 platforms:
+  - name: lighttpd-ubuntu-14.04
+    image: ubuntu:14.04
+    privileged: true
+    volumes:
+      - "/mnt/mirrors/ubuntu/14.04:/var/cache/apt/archives"
+    command: sleep infinity
   - name: lighttpd-ubuntu-16.04
     image: ubuntu:16.04
+    privileged: true
+    volume_mounts:
+      - "/mnt/mirrors/ubuntu/16.04:/var/cache/apt/archives"
+    command: sleep infinity
+  - name: lighttpd-ubuntu-18.04
+    image: ubuntu:18.04
+    privileged: true
+    volumes:
+      - "/mnt/mirrors/ubuntu/18.04:/var/cache/apt/archives"
+    command: sleep infinity
 provisioner:
   name: ansible
   lint:
@@ -18,3 +34,4 @@ verifier:
   name: goss
   lint:
     name: yamllint
+    enabled: false
