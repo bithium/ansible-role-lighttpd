@@ -5,8 +5,9 @@
     lighttpd_modules:
       - status
       - userdir
+    lighttpd_server_port: "{{ 8080 + play_hosts.index(inventory_hostname) }}"
     lighttpd_config:
-      server.port: "{{ 8080 + play_hosts.index(inventory_hostname) }}"
+      accesslog.filename: '"/var/log/lighttpd.log"'
   vars_files:
     - goss.yml
   roles:

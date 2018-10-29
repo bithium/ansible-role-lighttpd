@@ -23,7 +23,7 @@ file:
     group: root
     filetype: file
     contains:
-      - '!/server\\.port/'
+      - "server.port = {{.Vars.lighttpd.port}}"
 
   {{.Vars.lighttpd.extra_config}}:
     exists: true
@@ -33,7 +33,7 @@ file:
     contains:
       - 'server.modules +='
       - 'mod_status'
-      - "server.port = {{.Vars.lighttpd.port}}"
+      - 'accesslog.filename = "/var/log/lighttpd.log"'
 
 http:
   http://localhost:{{.Vars.lighttpd.port}}:

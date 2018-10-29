@@ -54,12 +54,14 @@ lighttpd_packages:
            - status
            - userdir
 
+ * Custom port configuration `lighttpd_server_port`
+
  * Custom configuration options:
 
    This is an hash with the options that will be placed in `lighttpd_extra_config_file` as `key = value`, e.g:
 
         lighttpd_config:
-           server.port: 4242
+           accesslog.filename: '"/var/log/lighttpd.log"'
 
 Dependencies
 ------------

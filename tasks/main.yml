@@ -6,12 +6,13 @@
     name: "{{lighttpd_packages}}"
     state: present
 
-- name: Prepare configuration for options override
+- name: Setup default server port
   lineinfile:
     path: "{{lighttpd_config_file}}"
-    state: absent
-    regexp: "^{{item}}"
-  with_items: "{{lighttpd_config}}"
+    state: present
+    regexp: "^server.port"
+    line: "server.port = {{lighttpd_server_port}}"
+  when: lighttpd_server_port is defined
 
 - name: Create configuration file
   template:
