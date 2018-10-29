@@ -42,4 +42,4 @@ http:
     # optional attributes
     timeout: 1000
     body:
-      - "Lighttpd server package"
+      - Lighttpd server package
