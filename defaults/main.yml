@@ -12,6 +12,7 @@ lighttpd_config_enabled_dir: "{{lighttpd_config_dir}}/conf-enabled"
 lighttpd_config_available_dir: "{{lighttpd_config_dir}}/conf-available"
 
 lighttpd_config_file: "{{lighttpd_config_dir}}/lighttpd.conf"
-lighttpd_extra_config_file: "{{lighttpd_config_enabled_dir}}/99_ansible.conf"
+
+lighttpd_extra_config_file: "{{lighttpd_config_enabled_dir}}/25_ansible.conf"
 
 lighttpd_service: lighttpd

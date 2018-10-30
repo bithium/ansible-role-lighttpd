@@ -2,16 +2,31 @@
 - name: Converge
   hosts: all
   vars:
+    lighttpd_base_dir: "/tmp/molecule"
+    lighttpd_server_port: "{{ 8080 + play_hosts.index(inventory_hostname) }}"
     lighttpd_modules:
       - status
-      - userdir
-    lighttpd_server_port: "{{ 8080 + play_hosts.index(inventory_hostname) }}"
+      - fastcgi
     lighttpd_config:
-      accesslog.filename: '"/var/log/lighttpd.log"'
+      server.port: "{{lighttpd_server_port}}"
+      server.document-root: "\"{{lighttpd_base_dir}}\""
+      fastcgi.debug: 1
   vars_files:
     - goss.yml
   roles:
     - role: lighttpd
   tasks:
+    - name: Create document root
+      file:
+        path: "{{lighttpd_base_dir}}"
+        state: directory
+        owner: root
+        group: root
+
+    - name: Create default index page
+      copy:
+        content: 'Ansible Configured Lighttpd server package'
+        dest: "{{lighttpd_base_dir}}/index.html"
+
     - name: Dump host variables for role
       template: src=config.yml.j2 dest={{goss_test_variables}}

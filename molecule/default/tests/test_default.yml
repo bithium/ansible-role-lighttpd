@@ -23,7 +23,7 @@ file:
     group: root
     filetype: file
     contains:
-      - "server.port = {{.Vars.lighttpd.port}}"
+      - server.document-root = "{{.Vars.lighttpd.root}}"
 
   {{.Vars.lighttpd.extra_config}}:
     exists: true
@@ -33,7 +33,7 @@ file:
     contains:
       - 'server.modules +='
       - 'mod_status'
-      - 'accesslog.filename = "/var/log/lighttpd.log"'
+      - 'fastcgi.debug = 1'
 
 http:
   http://localhost:{{.Vars.lighttpd.port}}:
@@ -42,4 +42,4 @@ http:
     # optional attributes
     timeout: 1000
     body:
-      - Lighttpd server package
+      - Ansible Configured Lighttpd server package

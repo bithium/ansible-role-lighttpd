@@ -54,14 +54,16 @@ lighttpd_packages:
            - status
            - userdir
 
- * Custom port configuration `lighttpd_server_port`
-
  * Custom configuration options:
 
-   This is an hash with the options that will be placed in `lighttpd_extra_config_file` as `key = value`, e.g:
+   This is an hash with the options that will be, either:
+     - replaced in `lighttpd_config_file`, or
+     - placed in `lighttpd_extra_config_file` as `key = value`, e.g:
 
         lighttpd_config:
-           accesslog.filename: '"/var/log/lighttpd.log"'
+           server.port = 8080
+           server.document-root: "/tmp/foobar"
+           fastcgi.debug: 1
 
 Dependencies
 ------------
