@@ -6,6 +6,18 @@ driver:
 lint:
   name: yamllint
 platforms:
+  - name: lighttpd-alpine-3.7
+    image: alpine:3.7
+    privileged: true
+    volumes:
+      - "/mnt/mirrors/alpine/3.7:/var/cache/apk"
+    command: /sbin/init
+  - name: lighttpd-alpine-3.8
+    image: alpine:3.8
+    privileged: true
+    volumes:
+      - "/mnt/mirrors/alpine/3.8:/var/cache/apk"
+    command: /sbin/init
   - name: lighttpd-debian-stable
     image: debian:stable
     privileged: true

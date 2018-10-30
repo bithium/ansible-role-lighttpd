@@ -6,6 +6,8 @@
     name: "{{lighttpd_packages}}"
     state: present
 
+- include_tasks: "{{ansible_os_family | lower}}.yml"
+  when: ansible_os_family == 'Alpine'
 
 - name: Find global configuration options
   command: >
