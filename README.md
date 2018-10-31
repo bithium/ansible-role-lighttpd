@@ -1,4 +1,4 @@
-Role Name
+ansible-role-lighttpd
 =========
 
 This role installs and configures [lighttpd](http://www.lighttpd.net/).
