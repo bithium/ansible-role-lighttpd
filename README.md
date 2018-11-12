@@ -65,6 +65,19 @@ lighttpd_packages:
            server.document-root: "/tmp/foobar"
            fastcgi.debug: 1
 
+  * User used in each OS for lighttpd:
+```yaml
+lighttpd_users:
+  Alpine: 'lighttpd'
+
+lighttpd_user: "{{ lighttpd_users[ansible_os_family] | default('www-data') }}"
+
+```
+
+  * Group used in each OS for lighttpd:
+
+        lighttpd_group: "www-data"
+
 Dependencies
 ------------
 
