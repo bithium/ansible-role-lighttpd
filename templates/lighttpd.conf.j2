@@ -14,6 +14,7 @@ server.modules += (
   {% for opt in lighttpd_config %}
     {% if opt not in lighttpd_global_options %}
 {{ opt }} = {{ lighttpd_config[opt] }}
+
     {% endif %}
   {% endfor %}
 {% endif %}
