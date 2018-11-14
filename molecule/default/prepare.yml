@@ -1,0 +1,17 @@
+---
+- name: Prepare
+  hosts: all
+
+  tasks:
+    - name: Setup local package cache
+      file:
+        src: /var/cache/apk
+        dest: /etc/apk/cache
+        state: link
+      when: ansible_os_family == 'Alpine'
+
+    - name: Setup image for keeping downloaded packages
+      file:
+        path: /etc/apt/apt.conf.d/docker-clean
+        state: absent
+      when: ansible_os_family == 'Debian'

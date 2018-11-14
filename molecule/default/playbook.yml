@@ -8,13 +8,16 @@
       - status
       - fastcgi
     lighttpd_config:
+      server.bind: '"127.0.0.1"'
       server.port: "{{lighttpd_server_port}}"
       server.document-root: "\"{{lighttpd_base_dir}}\""
       fastcgi.debug: 1
   vars_files:
     - goss.yml
+
   roles:
     - role: lighttpd
+
   tasks:
     - name: Create document root
       file:

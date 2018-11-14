@@ -8,45 +8,45 @@ lint:
 platforms:
   - name: lighttpd-alpine-3.7
     image: alpine:3.7
-    privileged: true
     volumes:
       - "/mnt/mirrors/alpine/3.7:/var/cache/apk"
+    privileged: true
     command: /sbin/init
   - name: lighttpd-alpine-3.8
     image: alpine:3.8
-    privileged: true
     volumes:
       - "/mnt/mirrors/alpine/3.8:/var/cache/apk"
+    privileged: true
     command: /sbin/init
   - name: lighttpd-debian-stable
     image: debian:stable
-    privileged: true
     volumes:
       - "/mnt/mirrors/debian/stable:/var/cache/apt/archives"
+    privileged: true
     command: sleep infinity
   - name: lighttpd-debian-testing
     image: debian:testing
-    privileged: true
     volumes:
       - "/mnt/mirrors/debian/testing:/var/cache/apt/archives"
+    privileged: true
     command: sleep infinity
   - name: lighttpd-ubuntu-14.04
     image: ubuntu:14.04
-    privileged: true
     volumes:
       - "/mnt/mirrors/ubuntu/14.04:/var/cache/apt/archives"
+    privileged: true
     command: sleep infinity
   - name: lighttpd-ubuntu-16.04
     image: ubuntu:16.04
-    privileged: true
-    volume_mounts:
+    volumes:
       - "/mnt/mirrors/ubuntu/16.04:/var/cache/apt/archives"
+    privileged: true
     command: sleep infinity
   - name: lighttpd-ubuntu-18.04
     image: ubuntu:18.04
-    privileged: true
     volumes:
       - "/mnt/mirrors/ubuntu/18.04:/var/cache/apt/archives"
+    privileged: true
     command: sleep infinity
 provisioner:
   name: ansible
