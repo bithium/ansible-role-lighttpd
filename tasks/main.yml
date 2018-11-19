@@ -19,6 +19,7 @@
 - name: Register global configuration options
   set_fact:
     lighttpd_global_options: "{{lighttpd_find_options.stdout_lines}}"
+  when: lighttpd_config is defined
 
 - name: Global configuration options overrides
   lineinfile:
