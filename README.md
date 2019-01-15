@@ -6,11 +6,13 @@ This role installs and configures [lighttpd](http://www.lighttpd.net/).
 Requirements
 ------------
 
-No special requirements; note that this role requires root access, so either run it in a playbook with a global `become: yes`, or invoke the role in your playbook like:
+No special requirements; 
 
-    - hosts: database
+Note, however that this role requires root access, so either run it in a playbook with a global `become: yes`, or invoke the role in your playbook like:
+
+    - hosts: webserver
       roles:
-        - role: bithium.postgresql
+        - role: bithium.lighttpd
           become: yes
 
 Role Variables
