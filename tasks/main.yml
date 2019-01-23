@@ -40,4 +40,3 @@
     dest: "{{lighttpd_extra_config_file}}"
     lstrip_blocks: true
   notify: restart lighttpd
-

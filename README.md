@@ -6,7 +6,7 @@ This role installs and configures [lighttpd](http://www.lighttpd.net/).
 Requirements
 ------------
 
-No special requirements; 
+No special requirements;
 
 Note, however that this role requires root access, so either run it in a playbook with a global `become: yes`, or invoke the role in your playbook like:
 
@@ -69,7 +69,7 @@ lighttpd_packages:
 
   * User used in each OS for lighttpd:
 ```yaml
-lighttpd_users:
+lighttpd_os_users:
   Alpine: 'lighttpd'
 
 lighttpd_user: "{{ lighttpd_users[ansible_os_family] | default('www-data') }}"
@@ -78,7 +78,13 @@ lighttpd_user: "{{ lighttpd_users[ansible_os_family] | default('www-data') }}"
 
   * Group used in each OS for lighttpd:
 
-        lighttpd_group: "www-data"
+```yaml
+lighttpd_os_groups:
+  Alpine: 'lighttpd'
+
+lighttpd_group: "{{ lighttpd_os_groups[ansible_os_family] | default('www-data') }}"
+
+```
 
 Dependencies
 ------------

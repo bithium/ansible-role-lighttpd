@@ -3,12 +3,11 @@
 
 lighttpd_package: lighttpd
 
-lighttpd_users:
+lighttpd_os_users:
   Alpine: 'lighttpd'
 
-lighttpd_user: "{{ lighttpd_users[ansible_os_family] | default('www-data') }}"
-
-lighttpd_group: "www-data"
+lighttpd_os_groups:
+  Alpine: 'lighttpd'
 
 lighttpd_packages:
   - "{{lighttpd_package}}"
