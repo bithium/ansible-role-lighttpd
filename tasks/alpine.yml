@@ -3,7 +3,7 @@
 
 - name: Create configuration folder
   file:
-    path: "{{lighttpd_config_enabled_dir}}"
+    path: "{{lighttpd_config_enabled_path}}"
     state: directory
     owner: root
     group: root

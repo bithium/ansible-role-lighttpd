@@ -12,13 +12,16 @@ lighttpd_os_groups:
 lighttpd_packages:
   - "{{lighttpd_package}}"
 
-lighttpd_config_dir: "/etc/lighttpd"
+lighttpd_config_path: "/etc/lighttpd"
 
-lighttpd_config_enabled_dir: "{{lighttpd_config_dir}}/conf-enabled"
-lighttpd_config_available_dir: "{{lighttpd_config_dir}}/conf-available"
+lighttpd_config_enabled_path: "{{lighttpd_config_path}}/conf-enabled"
+lighttpd_config_available_path: "{{lighttpd_config_path}}/conf-available"
 
-lighttpd_config_file: "{{lighttpd_config_dir}}/lighttpd.conf"
+lighttpd_sites_available_path: "{{lighttpd_config_available_path}}"
+lighttpd_sites_enabled_path: "{{lighttpd_config_enabled_path}}"
 
-lighttpd_extra_config_file: "{{lighttpd_config_enabled_dir}}/25_ansible.conf"
+lighttpd_config_file: "{{lighttpd_config_path}}/lighttpd.conf"
+
+lighttpd_extra_config_file: "{{lighttpd_config_enabled_path}}/25_ansible.conf"
 
 lighttpd_service: lighttpd
