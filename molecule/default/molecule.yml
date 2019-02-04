@@ -6,48 +6,84 @@ driver:
 lint:
   name: yamllint
 platforms:
-  - name: lighttpd-alpine-3.7
-    image: alpine:3.7
-    volumes:
-      - "/mnt/mirrors/alpine/3.7:/var/cache/apk"
-    privileged: true
-    command: /sbin/init
   - name: lighttpd-alpine-3.8
     image: alpine:3.8
     volumes:
       - "/mnt/mirrors/alpine/3.8:/var/cache/apk"
-    privileged: true
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    capabilities:
+      - SYS_ADMIN
+    command: /sbin/init
+  - name: lighttpd-alpine-3.9
+    image: alpine:3.9
+    volumes:
+      - "/mnt/mirrors/alpine/3.9:/var/cache/apk"
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    capabilities:
+      - SYS_ADMIN
     command: /sbin/init
   - name: lighttpd-debian-stable
     image: debian:stable
     volumes:
       - "/mnt/mirrors/debian/stable:/var/cache/apt/archives"
-    privileged: true
-    command: sleep infinity
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    capabilities:
+      - SYS_ADMIN
+    command: /lib/systemd/systemd
   - name: lighttpd-debian-testing
     image: debian:testing
     volumes:
       - "/mnt/mirrors/debian/testing:/var/cache/apt/archives"
     privileged: true
-    command: sleep infinity
+    command: /lib/systemd/systemd
   - name: lighttpd-ubuntu-14.04
     image: ubuntu:14.04
     volumes:
       - "/mnt/mirrors/ubuntu/14.04:/var/cache/apt/archives"
-    privileged: true
-    command: sleep infinity
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    capabilities:
+      - SYS_ADMIN
+    command: /sbin/init
   - name: lighttpd-ubuntu-16.04
     image: ubuntu:16.04
     volumes:
       - "/mnt/mirrors/ubuntu/16.04:/var/cache/apt/archives"
-    privileged: true
-    command: sleep infinity
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    capabilities:
+      - SYS_ADMIN
+    command: /sbin/init
   - name: lighttpd-ubuntu-18.04
     image: ubuntu:18.04
     volumes:
       - "/mnt/mirrors/ubuntu/18.04:/var/cache/apt/archives"
-    privileged: true
-    command: sleep infinity
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    capabilities:
+      - SYS_ADMIN
+    command: /sbin/init
 provisioner:
   name: ansible
   lint:
