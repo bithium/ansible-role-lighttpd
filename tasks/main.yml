@@ -1,6 +1,16 @@
 ---
 # tasks file for lighttpd
 
+- name: Include OS specific configuration values
+  include_vars: "{{lookup('first_found', params)}}"
+  vars:
+    params:
+      files:
+        - "{{ansible_distribution | lower}}.yml"
+        - "{{ansible_os_family | lower}}.yml"
+      paths:
+        - vars
+
 - name: Install lighttpd
   package:
     name: "{{lighttpd_packages}}"

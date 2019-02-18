@@ -1,0 +1,7 @@
+# Lighttpd Debian OS configuration values
+---
+
+lighttpd_user: www-data
+lighttpd_group: www-data
+
+lighttpd_config_path: /etc/lighttpd

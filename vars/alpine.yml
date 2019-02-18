@@ -1,0 +1,7 @@
+# Lighttpd Alpine OS configuration values
+---
+
+lighttpd_user: lighttpd
+lighttpd_group: lighttpd
+
+lighttpd_config_path: /etc/lighttpd
