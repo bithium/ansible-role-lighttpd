@@ -16,8 +16,15 @@
     name: "{{lighttpd_packages}}"
     state: present
 
-- include_tasks: "{{ansible_os_family | lower}}.yml"
-  when: ansible_os_family == 'Alpine'
+- include_tasks: "{{lookup('first_found', params)}}"
+  vars:
+    params:
+      files:
+        - "{{ansible_distribution | lower}}.yml"
+        - "{{ansible_os_family | lower}}.yml"
+        - other.yml
+      paths:
+        - tasks
 
 - name: Find global configuration options
   command: >

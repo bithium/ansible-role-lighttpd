@@ -1,0 +1,17 @@
+# Molecule managed
+---
+package:
+{{range .Vars.lighttpd.packages}}
+  {{.}}:
+    installed: true
+{{end}}
+
+service:
+  {{.Vars.lighttpd.service}}:
+    enabled: true
+    running: true
+
+port:
+  tcp:{{.Vars.lighttpd.port}}:
+    # required attributes
+    listening: true

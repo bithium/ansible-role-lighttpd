@@ -86,6 +86,10 @@ platforms:
     command: /sbin/init
 provisioner:
   name: ansible
+  # log: true
+  playbooks:
+    prepare: ../common/prepare.yml
+    converge: ../common/playbook.yml
   lint:
     name: ansible-lint
 scenario:

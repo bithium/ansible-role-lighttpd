@@ -1,0 +1,35 @@
+# Molecule managed
+---
+file:
+  {{.Vars.lighttpd.config}}:
+    exists: true
+    owner: root
+    group: root
+    filetype: file
+    contains:
+      - server.document-root = "{{.Vars.lighttpd.root}}"
+
+  {{.Vars.lighttpd.extra_config}}:
+    exists: true
+    owner: root
+    group: root
+    filetype: file
+    contains:
+      - 'server.modules +='
+      - 'mod_status'
+      - 'fastcgi.debug = 1'
+
+  {{.Vars.lighttpd.root}}:
+    exists: true
+    owner: {{.Vars.lighttpd.user}}
+    group: {{.Vars.lighttpd.group}}
+    filetype: directory
+
+http:
+  http://localhost:{{.Vars.lighttpd.port}}:
+    # required attributes
+    status: 200
+    # optional attributes
+    timeout: 1000
+    body:
+      - Ansible Configured Lighttpd server package

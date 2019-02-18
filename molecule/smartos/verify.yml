@@ -1,0 +1,24 @@
+---
+- name: Verify
+  hosts: all
+  vars:
+    root_path: "{{lookup('env', 'MOLECULE_PROJECT_DIRECTORY')}}"
+    scenario: "{{ lookup('env', 'MOLECULE_SCENARIO_NAME') }}"
+    log_path: "{{root_path}}/logs/molecule/{{scenario}}/{{inventory_hostname}}"
+    test_path: "{{ lookup('env', 'MOLECULE_VERIFIER_TEST_DIRECTORY') }}"
+    test_workdir: "{{goss_test_directory}}/{{scenario}}"
+
+  vars_files:
+    - ../common/goss.yml
+
+  tasks:
+    - set_fact:
+        goss_dst: /opt/local/bin/goss
+
+    - name: Copy goss to instance(s)
+      copy:
+        src: goss
+        dest: "{{goss_dst}}"
+        mode: "755"
+
+    - import_tasks: ../common/verify.yml

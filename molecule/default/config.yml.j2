@@ -1,8 +1,0 @@
----
-lighttpd:
-   packages: {{lighttpd_packages | to_json}}
-   service: {{lighttpd_service | quote}}
-   port: {{lighttpd_server_port}}
-   root: {{lighttpd_base_path}}
-   config: {{lighttpd_config_file}}
-   extra_config: {{lighttpd_extra_config_file}}

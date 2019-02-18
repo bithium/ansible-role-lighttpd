@@ -1,12 +1,7 @@
 ---
 # custom tasks file for lighttpd on Alpine Linux
 
-- name: Create configuration folder
-  file:
-    path: "{{lighttpd_config_enabled_path}}"
-    state: directory
-    owner: root
-    group: root
+- include_tasks: other.yml
 
 - name: Add include to global configuration file for custom configuration
   lineinfile:

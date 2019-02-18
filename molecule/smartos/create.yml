@@ -1,0 +1,102 @@
+---
+- name: Create
+  hosts: localhost
+  gather_facts: false
+  no_log: "{{ not (lookup('env', 'MOLECULE_DEBUG') | bool or molecule_yml.provisioner.log|default(false) | bool) }}"
+
+  vars:
+    ssh_identity_file: "{{molecule_ephemeral_directory}}/molecule_ssh_key"
+
+  tasks:
+
+    - name: Create ssh identity key for instance(s)
+      local_action: command ssh-keygen -N "" -f {{ ssh_identity_file }}
+      args:
+        stdin: "\n"
+        creates: "{{ ssh_identity_file }}"
+
+    - name: Add SmartOS host to inventory
+      add_host:
+        name: smartos-host
+
+    - name: Import zone images
+      imgadm:
+        uuid: "{{item.image_uuid | mandatory}}"
+        state: imported
+      delegate_to: smartos-host
+      loop: "{{molecule_yml.platforms}}"
+
+    - name: Create molecule instance(s)
+      vmadm:
+        brand: "{{item.brand | default('joyent')}}"
+        alias: "{{item.name | mandatory}}"
+        hostname: "{{item.hostname | default(item.name)}}"
+        image_uuid: "{{item.image_uuid | mandatory}}"
+        max_physical_memory: "{{item.max_physical_memory | default(1024)}}"
+        autoboot: false
+        nowait: true
+        nics:
+          - nic_tag: admin
+            ip: dhcp
+            primary: true
+        resolvers:
+          - 1.1.1.1
+          - 8.8.8.8
+          - 8.8.4.4
+        internal_metadata:
+          root_pw: root
+        customer_metadata:
+          root_authorized_keys: "{{lookup('file', ssh_identity_file + '.pub')}}"
+          user-script: >-
+            /usr/sbin/mdata-get root_authorized_keys > ~root/.ssh/authorized_keys
+      register: server
+      delegate_to: smartos-host
+      loop: "{{molecule_yml.platforms}}"
+
+    - name: Read instance(s) IP address
+      command: zlogin {{item.uuid}} ipadm show-addr -p -o ADDR net0/
+      register: instances_ips
+      delegate_to: smartos-host
+      loop: "{{ server | json_query('results[*].{name: name, uuid: uuid}') }}"
+
+    - name: Set instance(s) facts
+      set_fact:
+        instances: >-
+          {{ instances_ips | json_query('results[*].{name: item.name, uuid: item.uuid, addr: stdout}') }}
+
+    - name: Update package information in instance(s)
+      command: zlogin {{item.uuid}} pkgin update
+      register: result
+      delegate_to: smartos-host
+      changed_when: " 'up-to-date' not in result.stdout"
+      loop: "{{instances}}"
+
+    - name: Setup instance(s) for Ansible compatibility
+      command: zlogin {{item.uuid}} pkgin -y install python37
+      register: result
+      delegate_to: smartos-host
+      changed_when: " 'nothing to do.' not in result.stdout"
+      loop: "{{instances}}"
+
+    # Mandatory configuration for Molecule to function.
+
+    - name: Populate instance config dict
+      set_fact:
+        instance_conf_dict: {
+          'instance': "{{ item.name }}",
+          'address': "{{ item.addr | ipaddr('address') }}",
+          'user': "root",
+          'port': "22",
+          'identity_file': "{{ ssh_identity_file }}", }
+      with_items: "{{ instances }}"
+      register: instance_config_dict
+      # when: server.changed | bool
+
+    - name: Convert instance config dict to a list
+      set_fact:
+        instance_conf: "{{ instance_config_dict.results | map(attribute='ansible_facts.instance_conf_dict') | list }}"
+
+    - name: Dump instance config
+      copy:
+        content: "{{ instance_conf | to_json | from_json | molecule_to_yaml | molecule_header }}"
+        dest: "{{ molecule_instance_config }}"

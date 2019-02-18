@@ -1,0 +1,36 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: delegated
+lint:
+  name: yamllint
+platforms:
+  - name: lighttpd-smartos
+    image_uuid: 'c2c31b00-1d60-11e9-9a77-ff9f06554b0f'
+    groups:
+      - smartos
+provisioner:
+  name: ansible
+  log: true
+  # vvv: true
+  inventory:
+    group_vars:
+      smartos:
+        ansible_python_interpreter: /opt/local/bin/python
+    host_vars:
+      smartos-host:
+        ansible_host: $SMARTOS_HOST
+        ansible_python_interpreter: /opt/tools/bin/python
+  playbooks:
+    prepare: ../common/prepare.yml
+    converge: ../common/playbook.yml
+  lint:
+    name: ansible-lint
+scenario:
+  name: smartos
+verifier:
+  name: goss
+  lint:
+    name: yamllint
+    enabled: false
