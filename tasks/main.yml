@@ -53,6 +53,14 @@
     lstrip_blocks: true
   notify: restart lighttpd
 
+- name: Disable IPv6 support
+  lineinfile:
+    path: "{{lighttpd_config_file}}"
+    regexp: '^(server.use-ipv6.+)'
+    line: '#\1'
+    backrefs: true
+  notify: restart lighttpd
+
 - name: Enable lighttpd service
   service:
     name: "{{lighttpd_service}}"
