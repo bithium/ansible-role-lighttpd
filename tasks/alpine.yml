@@ -3,12 +3,6 @@
 
 - include_tasks: other.yml
 
-- name: Add include to global configuration file for custom configuration
-  lineinfile:
-    dest: "{{lighttpd_config_file}}"
-    line: "include \"{{lighttpd_extra_config_file}}\""
-  notify: restart lighttpd
-
 - name: Tweak init file for lighttpd
   lineinfile:
     path: /etc/init.d/lighttpd

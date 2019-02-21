@@ -12,3 +12,12 @@
     - "{{lighttpd_sites_enabled_path}}"
     - "{{lighttpd_config_available_path}}"
     - "{{lighttpd_config_enabled_path}}"
+
+- name: Add include to global configuration file for custom configuration
+  lineinfile:
+    dest: "{{lighttpd_config_file}}"
+    line: "include \"{{lighttpd_extra_config_file}}\""
+  when:
+    - lighttpd_config is defined
+    - ansible_os_family != 'Debian'
+  notify: restart lighttpd
