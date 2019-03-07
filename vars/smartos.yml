@@ -5,3 +5,5 @@ lighttpd_user: www
 lighttpd_group: www
 
 lighttpd_config_path: /opt/local/etc/lighttpd
+
+lighttpd_service: pkgsrc/lighttpd
