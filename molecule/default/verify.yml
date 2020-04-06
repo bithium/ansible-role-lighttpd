@@ -2,19 +2,18 @@
 - name: Verify
   hosts: all
   vars:
-    root_path: "{{lookup('env', 'MOLECULE_PROJECT_DIRECTORY')}}"
+    root_path: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}"
     scenario: "{{ lookup('env', 'MOLECULE_SCENARIO_NAME') }}"
-    log_path: "{{root_path}}/logs/molecule/{{scenario}}/{{inventory_hostname}}"
+    log_path: "{{ root_path }}/logs/molecule/{{ scenario }}/{{ inventory_hostname }}"
     test_path: "{{ lookup('env', 'MOLECULE_VERIFIER_TEST_DIRECTORY') }}"
-    test_workdir: "{{goss_test_directory}}/{{scenario}}"
+    test_workdir: "{{ goss_test_directory }}/{{ scenario }}"
 
   vars_files:
     - ../common/goss.yml
 
   tasks:
     - name: Download Goss
-      local_action: get_url
-      args:
+      get_url:
         url: "{{ goss_url }}"
         dest: "/tmp/goss-linux-{{ goss_arch }}"
         sha256sum: "{{ goss_sha256sum }}"
@@ -22,12 +21,13 @@
       until: download_goss is succeeded
       retries: 3
       run_once: true
+      delegate_to: localhost
 
     - name: Install Goss
-      copy: src="/tmp/goss-linux-{{ goss_arch }}" dest="{{goss_dst}}" mode=0755
+      copy: src="/tmp/goss-linux-{{ goss_arch }}" dest="{{ goss_dst }}" mode=0755
 
     - name: Patch Goss for Alpine
-      command: "sed -i 's/sysinit/default/' {{goss_dst}}"
+      command: "sed -i 's/sysinit/default/' {{ goss_dst }}"
       args:
         warn: false
       when: ansible_os_family == 'Alpine'

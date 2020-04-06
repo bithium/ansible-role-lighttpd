@@ -5,15 +5,16 @@
   no_log: "{{ not (lookup('env', 'MOLECULE_DEBUG') | bool or molecule_yml.provisioner.log|default(false) | bool) }}"
 
   vars:
-    ssh_identity_file: "{{molecule_ephemeral_directory}}/molecule_ssh_key"
+    ssh_identity_file: "{{ molecule_ephemeral_directory }}/molecule_ssh_key"
 
   tasks:
 
     - name: Create ssh identity key for instance(s)
-      local_action: command ssh-keygen -N "" -f {{ ssh_identity_file }}
+      command: ssh-keygen -N "" -f {{ ssh_identity_file }}
       args:
         stdin: "\n"
         creates: "{{ ssh_identity_file }}"
+      delegate_to: localhost
 
     - name: Add SmartOS host to inventory
       add_host:
@@ -21,18 +22,18 @@
 
     - name: Import zone images
       imgadm:
-        uuid: "{{item.image_uuid | mandatory}}"
+        uuid: "{{ item.image_uuid | mandatory }}"
         state: imported
       delegate_to: smartos-host
-      loop: "{{molecule_yml.platforms}}"
+      loop: "{{ molecule_yml.platforms }}"
 
     - name: Create molecule instance(s)
       vmadm:
-        brand: "{{item.brand | default('joyent')}}"
-        alias: "{{item.name | mandatory}}"
-        hostname: "{{item.hostname | default(item.name)}}"
-        image_uuid: "{{item.image_uuid | mandatory}}"
-        max_physical_memory: "{{item.max_physical_memory | default(1024)}}"
+        brand: "{{ item.brand | default('joyent') }}"
+        alias: "{{ item.name | mandatory }}"
+        hostname: "{{ item.hostname | default(item.name) }}"
+        image_uuid: "{{ item.image_uuid | mandatory }}"
+        max_physical_memory: "{{ item.max_physical_memory | default(1024) }}"
         autoboot: false
         nowait: true
         nics:
@@ -46,18 +47,18 @@
         internal_metadata:
           root_pw: root
         customer_metadata:
-          root_authorized_keys: "{{lookup('file', ssh_identity_file + '.pub')}}"
+          root_authorized_keys: "{{ lookup('file', ssh_identity_file + '.pub') }}"
           user-script: >-
             /usr/sbin/mdata-get root_authorized_keys > ~root/.ssh/authorized_keys
       register: server
       delegate_to: smartos-host
-      loop: "{{molecule_yml.platforms}}"
+      loop: "{{ molecule_yml.platforms }}"
 
     - name: Read instance(s) IP address
-      command: zlogin {{item.uuid}} ipadm show-addr -p -o ADDR net0/
+      command: zlogin {{ item.uuid }} ipadm show-addr -p -o ADDR net0/
       register: instances_ips
       delegate_to: smartos-host
-      loop: "{{ server | json_query('results[*].{name: name, uuid: uuid}') }}"
+      loop: "{{ server | json_query('results[*].{name: name, uuid: uuid}') }}"  # noqa 301
 
     - name: Set instance(s) facts
       set_fact:
@@ -65,18 +66,18 @@
           {{ instances_ips | json_query('results[*].{name: item.name, uuid: item.uuid, addr: stdout}') }}
 
     - name: Update package information in instance(s)
-      command: zlogin {{item.uuid}} pkgin update
+      command: zlogin {{ item.uuid }} pkgin update
       register: result
       delegate_to: smartos-host
       changed_when: " 'up-to-date' not in result.stdout"
-      loop: "{{instances}}"
+      loop: "{{ instances }}"
 
     - name: Setup instance(s) for Ansible compatibility
-      command: zlogin {{item.uuid}} pkgin -y install python37
+      command: zlogin {{ item.uuid }} pkgin -y install python37
       register: result
       delegate_to: smartos-host
       changed_when: " 'nothing to do.' not in result.stdout"
-      loop: "{{instances}}"
+      loop: "{{ instances }}"
 
     # Mandatory configuration for Molecule to function.
 

@@ -3,5 +3,5 @@
 
 - name: restart lighttpd
   service:
-    name: "{{lighttpd_service}}"
+    name: "{{ lighttpd_service }}"
     state: restarted

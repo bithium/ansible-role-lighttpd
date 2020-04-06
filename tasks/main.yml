@@ -2,60 +2,60 @@
 # tasks file for lighttpd
 
 - name: Include OS specific configuration values
-  include_vars: "{{lookup('first_found', params)}}"
+  include_vars: "{{ lookup('first_found', params) }}"
   vars:
     params:
       files:
-        - "{{ansible_distribution | lower}}.yml"
-        - "{{ansible_os_family | lower}}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
       paths:
         - vars
 
 - name: Install lighttpd
   package:
-    name: "{{lighttpd_packages}}"
+    name: "{{ lighttpd_packages }}"
     state: present
 
-- include_tasks: "{{lookup('first_found', params)}}"
+- include_tasks: "{{ lookup('first_found', params) }}"
   vars:
     params:
       files:
-        - "{{ansible_distribution | lower}}.yml"
-        - "{{ansible_os_family | lower}}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
         - other.yml
       paths:
         - tasks
 
 - name: Find global configuration options
   command: >
-    awk  '/^{{lighttpd_config | join("|") }}/{ print($1) }' {{lighttpd_config_file}}
+    awk  '/^{{ lighttpd_config | join("|") }}/{ print($1) }' {{ lighttpd_config_file }}
   register: lighttpd_find_options
   when: lighttpd_config is defined
   changed_when: false
 
 - name: Register global configuration options
   set_fact:
-    lighttpd_global_options: "{{lighttpd_find_options.stdout_lines}}"
+    lighttpd_global_options: "{{ lighttpd_find_options.stdout_lines }}"
   when: lighttpd_config is defined
 
 - name: Global configuration options overrides
   lineinfile:
-    path: "{{lighttpd_config_file}}"
-    regexp: "^{{item}}"
-    line: "{{item}} = {{lighttpd_config[item]}}"
-  with_items: "{{lighttpd_config}}"
+    path: "{{ lighttpd_config_file }}"
+    regexp: "^{{ item }}"
+    line: "{{ item }} = {{ lighttpd_config[item] }}"
+  with_items: "{{ lighttpd_config }}"
   when: lighttpd_config is defined and item in lighttpd_global_options
 
 - name: Create configuration file
   template:
     src: lighttpd.conf.j2
-    dest: "{{lighttpd_extra_config_file}}"
+    dest: "{{ lighttpd_extra_config_file }}"
     lstrip_blocks: true
   notify: restart lighttpd
 
 - name: Disable IPv6 support
   lineinfile:
-    path: "{{lighttpd_config_file}}"
+    path: "{{ lighttpd_config_file }}"
     regexp: '^(server.use-ipv6.+)'
     line: '#\1'
     backrefs: true
@@ -63,5 +63,5 @@
 
 - name: Enable lighttpd service
   service:
-    name: "{{lighttpd_service}}"
+    name: "{{ lighttpd_service }}"
     enabled: true

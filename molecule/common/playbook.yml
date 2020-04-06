@@ -9,8 +9,8 @@
       - fastcgi
     lighttpd_config:
       server.bind: '"127.0.0.1"'
-      server.port: "{{lighttpd_server_port}}"
-      server.document-root: "\"{{lighttpd_base_path}}\""
+      server.port: "{{ lighttpd_server_port }}"
+      server.document-root: "\"{{ lighttpd_base_path }}\""
       fastcgi.debug: 1
   vars_files:
     - goss.yml
@@ -21,17 +21,17 @@
   tasks:
     - name: Create document root
       file:
-        path: "{{lighttpd_base_path}}"
+        path: "{{ lighttpd_base_path }}"
         state: directory
-        owner: "{{lighttpd_user}}"
-        group: "{{lighttpd_group}}"
+        owner: "{{ lighttpd_user }}"
+        group: "{{ lighttpd_group }}"
 
     - name: Create default index page
       copy:
         content: 'Ansible Configured Lighttpd server package'
-        dest: "{{lighttpd_base_path}}/index.html"
-        owner: "{{lighttpd_user}}"
-        group: "{{lighttpd_group}}"
+        dest: "{{ lighttpd_base_path }}/index.html"
+        owner: "{{ lighttpd_user }}"
+        group: "{{ lighttpd_group }}"
 
     - name: Dump host variables for role
-      template: src=config.yml.j2 dest={{goss_test_variables}}
+      template: src=config.yml.j2 dest={{ goss_test_variables }}
