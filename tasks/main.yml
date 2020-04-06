@@ -32,6 +32,7 @@
   register: lighttpd_find_options
   when: lighttpd_config is defined
   changed_when: false
+  check_mode: false
 
 - name: Register global configuration options
   set_fact:
