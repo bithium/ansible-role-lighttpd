@@ -14,6 +14,9 @@ provisioner:
   name: ansible
   log: true
   # vvv: true
+  config_options:
+    defaults:
+      interpreter_python: auto_silent
   inventory:
     group_vars:
       smartos:

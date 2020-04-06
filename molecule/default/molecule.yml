@@ -90,6 +90,9 @@ platforms:
 provisioner:
   name: ansible
   # log: true
+  config_options:
+    defaults:
+      interpreter_python: auto_silent
   playbooks:
     prepare: ../common/prepare.yml
     converge: ../common/playbook.yml
