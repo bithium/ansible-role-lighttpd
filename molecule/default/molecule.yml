@@ -45,6 +45,18 @@ platforms:
     capabilities:
       - SYS_ADMIN
     command: /sbin/init
+  - name: lighttpd-alpine-3.11
+    image: alpine:3.9
+    volumes:
+      - "/mnt/mirrors/alpine/3.11:/var/cache/apk"
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    capabilities:
+      - SYS_ADMIN
+    command: /sbin/init
   - name: lighttpd-debian-stable
     image: debian:stable
     volumes:
