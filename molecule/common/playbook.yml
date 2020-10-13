@@ -25,6 +25,7 @@
         state: directory
         owner: "{{ lighttpd_user }}"
         group: "{{ lighttpd_group }}"
+        mode: 0755
 
     - name: Create default index page
       copy:
@@ -32,6 +33,7 @@
         dest: "{{ lighttpd_base_path }}/index.html"
         owner: "{{ lighttpd_user }}"
         group: "{{ lighttpd_group }}"
+        mode: 0644
 
     - name: Dump host variables for role
-      template: src=config.yml.j2 dest={{ goss_test_variables }}
+      template: src=config.yml.j2 dest={{ goss_test_variables }} mode=0644
