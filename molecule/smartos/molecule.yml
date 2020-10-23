@@ -3,8 +3,11 @@ dependency:
   name: galaxy
 driver:
   name: delegated
-lint:
-  name: yamllint
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+  flake8
 platforms:
   - name: lighttpd-smartos
     image_uuid: 'c2c31b00-1d60-11e9-9a77-ff9f06554b0f'
@@ -28,12 +31,10 @@ provisioner:
   playbooks:
     prepare: ../common/prepare.yml
     converge: ../common/playbook.yml
-  lint:
-    name: ansible-lint
+  lint: |
+    set -e
+    yamllint .
+    ansible-lint
+    flake8
 scenario:
   name: smartos
-verifier:
-  name: goss
-  lint:
-    name: yamllint
-    enabled: false
