@@ -14,11 +14,21 @@
     - "{{ lighttpd_config_available_path }}"
     - "{{ lighttpd_config_enabled_path }}"
 
+- name: Prepare global configuration file for custom configuration
+  lineinfile:
+    dest: "{{ lighttpd_config_file }}"
+    regex: 'include-conf-enabled\.pl'
+    state: absent
+  notify: restart lighttpd
+
 - name: Add include to global configuration file for custom configuration
   lineinfile:
     dest: "{{ lighttpd_config_file }}"
-    line: "include \"{{ lighttpd_extra_config_file }}\""
-  when:
-    - lighttpd_config is defined or lighttpd_modules is defined
-    - ansible_os_family != 'Debian'
+    line: "include \"{{ lighttpd_config_enabled_path }}/*.conf\""
+  notify: restart lighttpd
+
+- name: Add include to global configuration file for enabled sites
+  lineinfile:
+    dest: "{{ lighttpd_config_file }}"
+    line: "include \"{{ lighttpd_sites_enabled_path }}/*.conf\""
   notify: restart lighttpd
