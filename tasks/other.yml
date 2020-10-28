@@ -3,16 +3,18 @@
 
 - name: Create configuration paths
   file:
-    path: "{{ item }}"
+    path: "{{ path }}"
     owner: root
     group: root
     state: directory
     mode: 0755
-  loop:
+  with_items:
     - "{{ lighttpd_sites_available_path }}"
     - "{{ lighttpd_sites_enabled_path }}"
     - "{{ lighttpd_config_available_path }}"
     - "{{ lighttpd_config_enabled_path }}"
+  loop_control:
+    loop_var: path
 
 - name: Prepare global configuration file for custom configuration
   lineinfile:

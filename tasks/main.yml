@@ -2,29 +2,36 @@
 # tasks file for lighttpd
 
 - name: Include OS specific configuration values
-  include_vars: "{{ lookup('first_found', params) }}"
-  vars:
-    params:
-      files:
+  include_vars: "{{ config_file }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
         - "{{ ansible_distribution | lower }}.yml"
         - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
       paths:
-        - vars
+        - "{{ role_path }}/vars"
+  loop_control:
+    loop_var: config_file
 
 - name: Install lighttpd
   package:
     name: "{{ lighttpd_packages }}"
     state: present
 
-- include_tasks: "{{ lookup('first_found', params) }}"
-  vars:
-    params:
-      files:
+- include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
         - "{{ ansible_distribution | lower }}.yml"
         - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
         - other.yml
       paths:
-        - tasks
+        - "{{ role_path }}/tasks"
+
 
 - name: Find global configuration options
   command: >
