@@ -1,7 +1,6 @@
 ---
 # vars file for lighttpd
 
-
 lighttpd_config_enabled_path: "{{lighttpd_config_path}}/conf-enabled"
 lighttpd_config_available_path: "{{lighttpd_config_path}}/conf-available"
 

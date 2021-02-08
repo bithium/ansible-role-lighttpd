@@ -20,41 +20,70 @@ Role Variables
 
 Available variables are listed below, along with default values (see `defaults/main.yml` and `vars/main.yml`):
 
+### Default variables
+
  * Packages to install for each OS: `lighttpd_package`
 
-```yaml
----
-lighttpd_package: "lighttpd"
+   ```yaml
+   lighttpd_package: "lighttpd"
 
-lighttpd_packages:
-  - "{{lighttpd_package}}"
-```
+   lighttpd_packages:
+     - "{{lighttpd_package}}"
+   ```
 
  * Service name for lighttpd: `lighttpd_service: lighttpd`
 
- * Configuration folder: `lighttpd_config_dir: "/etc/lighttpd"`
+### OS specific variables
 
- * Configuration folder for available module:
+ * User used to run the server: `lighttpd_user`
 
-        lighttpd_config_available_dir: "{{lighttpd_config_dir}}/conf-available"
+ * Group used to run the server: `lighttpd_group`
 
- * Configuration folder for enabled modules:
+ * Base configuration path: `lighttpd_config_path`
 
-        lighttpd_config_enabled_dir: "{{lighttpd_config_dir}}/conf-enabled"
+ * Available configurations path:
 
- * Global configuration file:
+   ```yaml
+   lighttpd_config_available_path: "{{lighttpd_config_path}}/conf-available"
+   ```
 
-        lighttpd_config_file: "{{lighttpd_config_dir}}/lighttpd.conf"
+ * Available sites configuration path:
+
+   ```yaml
+   lighttpd_sites_available_path: "{{lighttpd_config_available_path}}"
+   ```
+
+ * Enabled configurations path:
+
+   ```yaml
+   lighttpd_config_enabled_path: "{{lighttpd_config_path}}/conf-enabled"
+   ```
+
+ * Enabled sites configuration path:
+
+   ```yaml
+   lighttpd_sites_enabled_path: "{{lighttpd_config_enabled_path}}"
+   ```
+
+ * Main configuration file:
+
+   ```yaml
+   lighttpd_config_file: "{{lighttpd_config_path}}/lighttpd.conf"
+   ```
 
  * Configuration file created by this role:
 
-        lighttpd_extra_config_file: "{{lighttpd_config_enabled_dir}}/99_ansible.conf"
+   ```yaml
+   lighttpd_extra_config_file: "{{lighttpd_config_enabled_dir}}/25_ansible.conf"
+   ```
 
- * Configuration modules to add to configuration:
+ * Configuration modules to add to the configuration:
 
-        lighttpd_modules:
-           - status
-           - userdir
+   ```yaml
+   lighttpd_modules:
+      - status
+      - userdir
+   ```
 
  * Custom configuration options:
 
@@ -62,29 +91,13 @@ lighttpd_packages:
      - replaced in `lighttpd_config_file`, or
      - placed in `lighttpd_extra_config_file` as `key = value`, e.g:
 
-        lighttpd_config:
-           server.port = 8080
-           server.document-root: "/tmp/foobar"
-           fastcgi.debug: 1
 
-  * User used in each OS for lighttpd:
-```yaml
-lighttpd_os_users:
-  Alpine: 'lighttpd'
-
-lighttpd_user: "{{ lighttpd_users[ansible_os_family] | default('www-data') }}"
-
-```
-
-  * Group used in each OS for lighttpd:
-
-```yaml
-lighttpd_os_groups:
-  Alpine: 'lighttpd'
-
-lighttpd_group: "{{ lighttpd_os_groups[ansible_os_family] | default('www-data') }}"
-
-```
+   ```yaml
+   lighttpd_config:
+      server.port: 8080
+      server.document-root: "/tmp/foobar"
+      fastcgi.debug: 1
+   ```
 
 Dependencies
 ------------
